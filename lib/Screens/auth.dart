@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sillyhacks/Screens/cam.dart';
 import 'profile.dart';
 import 'package:sillyhacks/constants.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -43,8 +44,8 @@ class _LoginScreenState extends State<LoginScreen> {
         child: isBusy
         ? SpinKitWave(color: Colors.cyanAccent[400])
         : isLoggedIn
-    ? Profile(logoutAction, name, picture)
-        : Login(loginAction, errorMessage),
+            ? MyCameraScreen()
+            : Login(loginAction, errorMessage),
     ),
     );
   }

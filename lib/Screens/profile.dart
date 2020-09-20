@@ -9,12 +9,10 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
 class Profile extends StatefulWidget {
-  static String id = 'profile';
-  final logoutAction;
-  final String name;
-  final String picture;
+//  final String picture;
+  final String imageUrl;
 
-  Profile(this.logoutAction, this.name, this.picture);
+  Profile(this.imageUrl);
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -22,8 +20,7 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   String dir;
-  final imgUrl =
-      "https://04951bc2a388.ngrok.io/files/final.mp4";
+  String imgUrl = "";
   bool downloading = false;
   VideoPlayerController _controller;
   var progressString = "";
@@ -64,6 +61,7 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
     getPermission();
+    imgUrl = widget.imageUrl;
 //    downloadFile();
     _controller = VideoPlayerController.network(imgUrl)
       ..initialize().then((_) {
@@ -86,18 +84,18 @@ class _ProfileState extends State<Profile> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.blue, width: 4.0),
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    fit: BoxFit.fill,
-                    image: NetworkImage(widget.picture ?? ''),
-                  ),
-                ),
-              ),
+//              Container(
+////                width: 50,
+////                height: 50,
+////                decoration: BoxDecoration(
+////                  border: Border.all(color: Colors.blue, width: 4.0),
+////                  shape: BoxShape.circle,
+////                  image: DecorationImage(
+////                    fit: BoxFit.fill,
+////                    image: NetworkImage(widget.picture ?? ''),
+////                  ),
+////                ),
+////              ),
             ],
           )),
       body: SingleChildScrollView(
@@ -121,7 +119,15 @@ class _ProfileState extends State<Profile> {
                   child: _controller.value.initialized
                       ? AspectRatio(
                           aspectRatio: _controller.value.aspectRatio,
-                          child: VideoPlayer(_controller),
+                          child: InkWell(
+                            onTap: (){
+                              setState(() {
+                                _controller.value.isPlaying
+                                    ? _controller.pause()
+                                    : _controller.play();
+                              });
+                            },
+                              child: VideoPlayer(_controller)),
                         )
                       : Container(),
                 ),
@@ -159,15 +165,10 @@ class _ProfileState extends State<Profile> {
                             border: Border.all(color: Colors.grey, width: 2)),
                         child: IconButton(
                           onPressed: () {
-                            setState(() {
-                              _controller.value.isPlaying
-                                  ? _controller.pause()
-                                  : _controller.play();
-                            });
-//                            Navigator.push(
-//                                context,
-//                                MaterialPageRoute(
-//                                    builder: (context) => MyCameraScreen()));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MyCameraScreen()));
                           },
                           icon: Icon(Icons.camera_alt),
                         ),
