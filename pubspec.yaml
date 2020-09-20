@@ -20,6 +20,7 @@ dependencies:
   video_player: ^0.10.12+3
   image_picker: ^0.6.7+7
   flutter_secure_storage: ^3.3.3
+  path_provider: ^1.6.16
   flutter:
     sdk: flutter
 
