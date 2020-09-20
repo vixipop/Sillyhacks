@@ -1,7 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:async/async.dart';
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
+import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
+import 'dart:convert';
 
 class MyCameraScreen extends StatefulWidget {
   @override
@@ -9,7 +14,6 @@ class MyCameraScreen extends StatefulWidget {
 }
 
 class _MyCameraScreenState extends State<MyCameraScreen> {
- 
 PickedFile imageURI;
 final ImagePicker _picker=ImagePicker();
 
@@ -59,7 +63,22 @@ Future getImageFromeGallery(bool isCamera) async{
                 Icons.photo_album,
               ),
             ),
-            
+            FloatingActionButton(
+              onPressed: (){
+                uploadImageToServer(File(imageURI.path));
+              },
+              child: Icon(
+                Icons.upload_file,
+              ),
+            ),
+            FloatingActionButton(
+              onPressed: (){
+                getImageFromeGallery(false);
+              },
+              child: Icon(
+                Icons.mail,
+              ),
+            ),
           ],
         ),
     );
@@ -67,3 +86,19 @@ Future getImageFromeGallery(bool isCamera) async{
 }
 
 
+uploadImageToServer(File imageFile)async
+  {
+    http.MultipartRequest request = http.MultipartRequest('POST', Uri.parse('https://2aa4744cc5a4.ngrok.io/api'));
+    request.files.add(
+    await http.MultipartFile.fromPath(
+      'image',
+      imageFile.path,
+      contentType: MediaType('application', 'png'),
+    ),
+  );
+  http.StreamedResponse r = await request.send();
+  String rstring = (await r.stream.transform(utf8.decoder).join());
+  Map<String, dynamic> rjson = jsonDecode(rstring);
+  String imageUrl = rjson["file_url"];
+  print(imageUrl);
+}
