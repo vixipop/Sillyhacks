@@ -2,10 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'profile.dart';
 import 'package:sillyhacks/constants.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'login_screen.dart';
+import 'profile.dart';
 
 final FlutterAppAuth appAuth = FlutterAppAuth();
 final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
@@ -36,29 +39,13 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBlueBG,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 80,
-              ),
-              child: Image.asset(
-                'assets/sticker.png',
-              ),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.3),
-            Center(
-              child: isBusy
-                  ? CircularProgressIndicator()
-                  : isLoggedIn
-                      ? Profile(logoutAction, name, picture)
-                      : Login(loginAction, errorMessage),
-            ),
-          ],
-        ),
-      ),
+      body: Center(
+        child: isBusy
+        ? SpinKitWave(color: Colors.cyanAccent[400])
+        : isLoggedIn
+    ? Profile(logoutAction, name, picture)
+        : Login(loginAction, errorMessage),
+    ),
     );
   }
 
@@ -92,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       final AuthorizationTokenResponse result =
-          await appAuth.authorizeAndExchangeCode(
+      await appAuth.authorizeAndExchangeCode(
         AuthorizationTokenRequest(AUTH0_CLIENT_ID, AUTH0_REDIRECT_URI,
             issuer: 'https://$AUTH0_DOMAIN',
             scopes: ['openid', 'profile', 'offline_access'],
@@ -170,45 +157,3 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-class Login extends StatelessWidget {
-  final loginAction;
-  final String loginError;
-
-  const Login(this.loginAction, this.loginError);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        InkWell(
-          onTap: () {
-            loginAction();
-          },
-          child: Container(
-            width: 300,
-            height: 60,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.teal[400],
-            ),
-            child: Row(
-              children: [
-                Image.asset(
-                  'assets/auth0.png',
-                  width: 120,
-                  height: 50,
-                ),
-                Text(
-                  'Login with Auth0',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Text(loginError ?? ''),
-      ],
-    );
-  }
-}

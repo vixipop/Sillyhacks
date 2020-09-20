@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 final Color kBlueBG = Color(0xFF2D4A75);
+final Color kGreen = Color(0xFF9ACDC1);
 
 var kTextFieldDecoration = InputDecoration(
   hintText:'',

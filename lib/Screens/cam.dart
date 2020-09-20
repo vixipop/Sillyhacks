@@ -13,7 +13,7 @@ class _MyCameraScreenState extends State<MyCameraScreen> {
 PickedFile imageURI;
 final ImagePicker _picker=ImagePicker();
 
-Future getImageFromeGallery(bool isCamera) async{
+Future getImageFromGallery(bool isCamera) async{
   var image=await _picker.getImage(source:(isCamera==true)?ImageSource.camera:ImageSource.gallery);
   setState((){
     imageURI=image;
@@ -42,7 +42,7 @@ Future getImageFromeGallery(bool isCamera) async{
           children: <Widget>[
             FloatingActionButton(
               onPressed: (){
-                getImageFromeGallery(true);
+                getImageFromGallery(true);
               },
               child: Icon(
                 Icons.camera,
@@ -53,7 +53,7 @@ Future getImageFromeGallery(bool isCamera) async{
             ),
             FloatingActionButton(
               onPressed: (){
-                getImageFromeGallery(false);
+                getImageFromGallery(false);
               },
               child: Icon(
                 Icons.photo_album,
